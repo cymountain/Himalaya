@@ -1,5 +1,8 @@
 package com.example.himalaya.adepters;
 
+import android.nfc.Tag;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdapter.InnerHoder> {
+    private static final String TAG = "RecommendListAdapter";
     private List<Album> mData = new ArrayList<>();
     @NonNull
     @Override
@@ -73,7 +77,17 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
             albumPlaytv.setText(album.getPlayCount() + "");
             albumContenttv.setText(album.getIncludeTrackCount() + "");
 
-            Picasso.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIv);
+            //Picasso.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIv);
+            String coverUrlLarge = album.getCoverUrlLarge();
+            if (!TextUtils.isEmpty(coverUrlLarge)) {
+                Picasso.with(itemView.getContext()).load(coverUrlLarge).into(albumCoverIv);
+                Log.e(TAG,"获取到图片。");
+            } else {
+                albumCoverIv.setImageResource(R.mipmap.ximalaya_log);
+                Log.e(TAG,"未获取到图片。");
+            }
+            
+
 
         }
     }
