@@ -14,17 +14,18 @@ public interface IReconmmendCallBack {
     void onReconmmendListLoaded(List<Album> album);
 
     /**
-     * 加载更多
+     * 网络错误
      *
-     * @param album
      */
-    void onLaoderMore(List<Album> album);
+    void onNetworkError();
 
     /**
-     * 下拉加载更多
-     *
-     * @param album
+     * 数据为空
      */
-    void onRefreshMore(List<Album> album);
+    void onEmpty();
 
+    /**
+     * z正在加载
+     */
+    void onLoading();
 }
