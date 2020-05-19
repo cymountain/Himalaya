@@ -22,7 +22,7 @@
         
         <TextView
             android:id="@+id/album_title_tv"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lines="1"
             android:ellipsize="end"
@@ -35,6 +35,7 @@
             android:layout_height="15dp"
             android:layout_marginTop="3dp"
             android:ellipsize="end"
+            android:layout_marginRight="20dp"
             android:text="为你开启成功之路,给你指向未来......"
             android:lines="1"
             android:textSize="12dp"/>
