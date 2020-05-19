@@ -21,7 +21,7 @@ public class DetailListAdepter extends RecyclerView.Adapter<DetailListAdepter.In
 
     private SimpleDateFormat mUpdateFormat = new SimpleDateFormat("yyyy-mm-dd");
     private SimpleDateFormat mDurationFormat = new SimpleDateFormat("mm:dd");
-    private ItemClickListenner mItemClickListenner = null;
+    private ItemClickListener mItemClickListener = null;
 
     @NonNull
     @Override
@@ -31,7 +31,7 @@ public class DetailListAdepter extends RecyclerView.Adapter<DetailListAdepter.In
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
+    public void onBindViewHolder(@NonNull InnerHolder holder, final int position) {
         //找到控件
         View itemView = holder.itemView;
         //找控件
@@ -56,8 +56,8 @@ public class DetailListAdepter extends RecyclerView.Adapter<DetailListAdepter.In
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mItemClickListenner != null) {
-                    mItemClickListenner.onItemClick();
+                if (mItemClickListener != null) {
+                    mItemClickListener.onItemClick(mDetailData,position);
                 }
             }
         });
@@ -80,10 +80,10 @@ public class DetailListAdepter extends RecyclerView.Adapter<DetailListAdepter.In
             super(itemView);
         }
     }
-    public void setItemClickListenner(ItemClickListenner listenner){
-        mItemClickListenner = listenner;
+    public void setItemClickListener(ItemClickListener listener){
+        mItemClickListener = listener;
     }
-    public interface ItemClickListenner {
-        void onItemClick();
+    public interface ItemClickListener {
+        void onItemClick(List<Track> detailData, int position);
     }
 }
