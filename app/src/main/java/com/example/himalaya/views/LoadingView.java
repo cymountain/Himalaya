@@ -30,7 +30,7 @@ public class LoadingView extends ImageView {
     public LoadingView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         //设置图片
-        setImageResource(R.mipmap.loading);
+        setImageResource(R.mipmap.ic_laoding);
     }
 
     @Override
@@ -41,11 +41,11 @@ public class LoadingView extends ImageView {
         post(new Runnable() {
             @Override
             public void run() {
-                rotateDegree += 15;
+                rotateDegree += 7.5;
                 rotateDegree = rotateDegree <= 360 ? rotateDegree : 0;
                 invalidate();
                 if (mNeedRotate) {
-                    postDelayed(this,100);
+                    postDelayed(this,50);
                 }
             }
         });

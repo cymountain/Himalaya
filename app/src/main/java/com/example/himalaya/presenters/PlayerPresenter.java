@@ -1,23 +1,66 @@
 package com.example.himalaya.presenters;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.himalaya.base.BaseApplication;
 import com.example.himalaya.interfaces.IPlayerCallback;
 import com.example.himalaya.interfaces.IPlayerPresenter;
+import com.ximalaya.ting.android.opensdk.model.PlayableModel;
+import com.ximalaya.ting.android.opensdk.model.advertis.Advertis;
+import com.ximalaya.ting.android.opensdk.model.advertis.AdvertisList;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.XmPlayerManager;
+import com.ximalaya.ting.android.opensdk.player.advertis.IXmAdsStatusListener;
+import com.ximalaya.ting.android.opensdk.player.constants.PlayerConstants;
+import com.ximalaya.ting.android.opensdk.player.service.IXmPlayerStatusListener;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
+import com.ximalaya.ting.android.opensdk.player.service.XmPlayerException;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerPresenter implements IPlayerPresenter {
+import static com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl.PlayMode.PLAY_MODEL_LIST;
+import static com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl.PlayMode.PLAY_MODEL_LIST_LOOP;
+import static com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl.PlayMode.PLAY_MODEL_RANDOM;
+import static com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl.PlayMode.PLAY_MODEL_SINGLE_LOOP;
+
+public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, IXmPlayerStatusListener {
+
+    private List<IPlayerCallback> mIPlayerCallbacks = new ArrayList<>();
 
     private XmPlayerManager mPlayerManager;
     private static final String TAG = "PlayerPresenter";
+    private Track mCurrentTrack;
+    private int mCurrentIndex = 0;
+    private final SharedPreferences mPlayModeSp;
+    private XmPlayListControl.PlayMode mCurrentPlayMode = PLAY_MODEL_LIST;
+
+    /**
+     * PLAY_MODEL_LIST
+     * PLAY_MODEL_LIST_LOOP
+     * PLAY_MODEL_RANDOM
+     * PLAY_MODEL_SINGLE_LOOP
+     */
+    public static final int PLAY_MODEL_LIST_INT = 0;
+    public static final int PLAY_MODEL_LIST_LOOP_INT = 1;
+    public static final int PLAY_MODEL_RANDOM_INT = 2;
+    public static final int PLAY_MODEL_SINGLE_LOOP_INT = 3;
+
+    //sp的 key 和 name
+    public static final String PLAY_MODE_SP_NAME = "PlayMode";
+    public static final String PLAY_MODE_SP_KEY = "currentPlayMode";
 
     private PlayerPresenter() {
         mPlayerManager = XmPlayerManager.getInstance(BaseApplication.getAppContext());
+        //广告物料相关的
+        mPlayerManager.addAdsStatusListener(this);
+        //注册播放器相关的接口
+        mPlayerManager.addPlayerStatusListener(this);
+        //记录当前的播放模式
+        mPlayModeSp = BaseApplication.getAppContext().getSharedPreferences(PLAY_MODE_SP_NAME, Context.MODE_PRIVATE);
+
     }
 
     private static PlayerPresenter sPlayerPresenter;
@@ -39,8 +82,10 @@ public class PlayerPresenter implements IPlayerPresenter {
         if (mPlayerManager != null) {
             mPlayerManager.setPlayList(list, playIndex);
             isPlayListSet = true;
+            mCurrentTrack = list.get(playIndex);
+            mCurrentIndex = playIndex;
         } else {
-            Log.e(TAG,"mPlayerManager is null");
+            Log.e(TAG, "mPlayerManager is null");
         }
     }
 
@@ -53,7 +98,9 @@ public class PlayerPresenter implements IPlayerPresenter {
 
     @Override
     public void pause() {
-
+        if (isPlayListSet) {
+            mPlayerManager.pause();
+        }
     }
 
     @Override
@@ -63,41 +110,237 @@ public class PlayerPresenter implements IPlayerPresenter {
 
     @Override
     public void playPre() {
-
+        //播放前一首
+        if (mPlayerManager != null) {
+            mPlayerManager.playPre();
+        }
     }
 
     @Override
     public void playNext() {
-
+        //播放后一首
+        if (mPlayerManager != null) {
+            mPlayerManager.playNext();
+        }
     }
 
     @Override
     public void switchPlayMode(XmPlayListControl.PlayMode mode) {
+        if (mPlayerManager != null) {
+            mCurrentPlayMode = mode;
+            mPlayerManager.setPlayMode(mode);
+            //更新播放模式
+            for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
+                iPlayerCallback.onPlayModeChange(mode);
+            }
+            //保存到sp
+            SharedPreferences.Editor edit = mPlayModeSp.edit();
+            edit.putInt(PLAY_MODE_SP_KEY, getIntByPlayMode(mode));
+            edit.commit();
+        }
+    }
 
+    private int getIntByPlayMode(XmPlayListControl.PlayMode mode) {
+        switch (mode) {
+            case PLAY_MODEL_LIST:
+                return PLAY_MODEL_LIST_INT;
+            case PLAY_MODEL_LIST_LOOP:
+                return PLAY_MODEL_LIST_LOOP_INT;
+            case PLAY_MODEL_RANDOM:
+                return PLAY_MODEL_RANDOM_INT;
+            case PLAY_MODEL_SINGLE_LOOP:
+                return PLAY_MODEL_SINGLE_LOOP_INT;
+        }
+        return PLAY_MODEL_LIST_INT;
+    }
+
+    private XmPlayListControl.PlayMode getModeByMode(int index) {
+        switch (index) {
+            case PLAY_MODEL_LIST_INT:
+                return PLAY_MODEL_LIST;
+            case PLAY_MODEL_LIST_LOOP_INT:
+                return PLAY_MODEL_LIST_LOOP;
+            case PLAY_MODEL_RANDOM_INT:
+                return PLAY_MODEL_RANDOM;
+            case PLAY_MODEL_SINGLE_LOOP_INT:
+                return PLAY_MODEL_SINGLE_LOOP;
+        }
+        return PLAY_MODEL_LIST;
     }
 
     @Override
     public void getPlayList() {
+        if (mPlayerManager != null) {
+            List<Track> playList = mPlayerManager.getPlayList();
+            for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
+                iPlayerCallback.onListLoaded(playList);
+            }
+        }
 
     }
 
     @Override
     public void playByIndex(int index) {
-
+        if (mPlayerManager != null) {
+            mPlayerManager.play(index);
+        }
     }
 
     @Override
     public void seekTo(int progress) {
+        //跟新播放器进度
+        mPlayerManager.seekTo(progress);
+    }
 
+    @Override
+    public boolean isPlay() {
+        //返回当前是否正在播放
+        return mPlayerManager.isPlaying();
     }
 
     @Override
     public void registerViewCallback(IPlayerCallback iPlayerCallback) {
-
+        iPlayerCallback.onTrackUpdade(mCurrentTrack, mCurrentIndex);
+        //从sp里拿mode
+        int anInt = mPlayModeSp.getInt(PLAY_MODE_SP_KEY, PLAY_MODEL_LIST_INT);
+        mCurrentPlayMode = getModeByMode(anInt);
+        iPlayerCallback.onPlayModeChange(mCurrentPlayMode);
+        if (!mIPlayerCallbacks.contains(iPlayerCallback)) {
+            mIPlayerCallbacks.add(iPlayerCallback);
+        }
     }
 
     @Override
     public void unRegisterViewCallback(IPlayerCallback iPlayerCallback) {
+        mIPlayerCallbacks.remove(iPlayerCallback);
+    }
+
+    //========================================广告相关的回调方法  Start====================================
+    @Override
+    public void onStartGetAdsInfo() {
+        Log.d(TAG, "onStartGetAdsInfo");
+    }
+
+    @Override
+    public void onGetAdsInfo(AdvertisList advertisList) {
+        Log.d(TAG, "onGetAdsInfo...");
 
     }
+
+    @Override
+    public void onAdsStartBuffering() {
+        Log.d(TAG, "onAdsStartBuffering...");
+
+    }
+
+    @Override
+    public void onAdsStopBuffering() {
+        Log.d(TAG, "onAdsStopBuffering...");
+
+    }
+
+    @Override
+    public void onStartPlayAds(Advertis advertis, int i) {
+        Log.d(TAG, "onStartPlayAds...");
+
+    }
+
+    @Override
+    public void onCompletePlayAds() {
+        Log.d(TAG, "onCompletePlayAds...");
+
+    }
+
+    @Override
+    public void onError(int what, int extra) {
+        Log.d(TAG, "what is --->" + what + "extra is --->" + extra);
+
+    }
+    //========================================广告相关的回调方法  End====================================
+
+    //========================================播放器相关的回调方法  Start====================================
+    @Override
+    public void onPlayStart() {
+        Log.d(TAG, "onPlayStart...");
+        for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
+            iPlayerCallback.onPlayStart();
+        }
+    }
+
+    @Override
+    public void onPlayPause() {
+        Log.d(TAG, "onPlayPause...");
+        for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
+            iPlayerCallback.onPlayPause();
+        }
+    }
+
+    @Override
+    public void onPlayStop() {
+        Log.d(TAG, "onPlayStop...");
+        for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
+            iPlayerCallback.onPlayStop();
+        }
+    }
+
+    @Override
+    public void onSoundPlayComplete() {
+        Log.d(TAG, "onSoundPlayComplete...");
+    }
+
+    @Override
+    public void onSoundPrepared() {
+        Log.d(TAG, "onSoundPrepared...");
+        mPlayerManager.setPlayMode(mCurrentPlayMode);
+        if (mPlayerManager.getPlayerStatus() == PlayerConstants.STATE_PREPARED) {
+            //播放器准备好了
+            mPlayerManager.play();
+        }
+    }
+
+    @Override
+    public void onSoundSwitch(PlayableModel lastModel, PlayableModel curModel) {
+        Log.d(TAG, "onSoundSwitch...");
+        mCurrentIndex = mPlayerManager.getCurrentIndex();
+        if (curModel instanceof Track) {
+            Track currentTrack = (Track) curModel;
+            mCurrentTrack = currentTrack;
+            Log.e(TAG, "title is  === >" + currentTrack.getTrackTitle());
+            //更新Ui
+            for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
+                iPlayerCallback.onTrackUpdade(mCurrentTrack, mCurrentIndex);
+            }
+        }
+    }
+
+    @Override
+    public void onBufferingStart() {
+        Log.d(TAG, "onBufferingStart...");
+    }
+
+    @Override
+    public void onBufferingStop() {
+        Log.d(TAG, "onBufferingStop...");
+    }
+
+    @Override
+    public void onBufferProgress(int progress) {
+        Log.d(TAG, "play Progress..." + progress);
+
+    }
+
+    @Override
+    public void onPlayProgress(int currPos, int duration) {
+        //Log.d(TAG,"onPlayProgress...");
+        for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
+            iPlayerCallback.onProgressChange(currPos, duration);
+        }
+    }
+
+    @Override
+    public boolean onError(XmPlayerException e) {
+        Log.d(TAG, "onError Exception is --->" + e);
+        return false;
+    }
+    //========================================播放器相关的回调方法  End====================================
 }

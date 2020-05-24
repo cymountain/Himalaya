@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.himalaya.adepters.DetailListAdepter;
 import com.example.himalaya.base.BaseActivity;
 import com.example.himalaya.interfaces.IAlbumDetialViewCallback;
-import com.example.himalaya.presenters.AlbumDetialPresenter;
+import com.example.himalaya.presenters.AlbumDetailPresenter;
 import com.example.himalaya.presenters.PlayerPresenter;
 import com.example.himalaya.utils.ImageBlur;
 import com.example.himalaya.views.RoundRectImageView;
@@ -39,12 +37,12 @@ import java.util.List;
 public class DetailActivity extends BaseActivity implements IAlbumDetialViewCallback, UILoader.OnRetryClickListener, DetailListAdepter.ItemClickListener {
 
     private ImageView mLargeCover;
-    private RoundRectImageView mSamllCover;
+    private RoundRectImageView mSmallCover;
     private TextView mAlbumTitle;
     private TextView mAlbumAuthor;
-    private AlbumDetialPresenter mAlbumDetialPresenter;
+    private AlbumDetailPresenter mAlbumDetailPresenter;
     private String TAG = "DetailActivity";
-    private int mCurrenpage = 1;
+    private int mCurrenPage = 1;
     private RecyclerView mDetailList;
     private DetailListAdepter mDetailListAdepter;
     private FrameLayout mDetailListContainer;
@@ -59,8 +57,8 @@ public class DetailActivity extends BaseActivity implements IAlbumDetialViewCall
         getWindow().setStatusBarColor(Color.TRANSPARENT);
 
         initView();
-        mAlbumDetialPresenter = AlbumDetialPresenter.getInstance();
-        mAlbumDetialPresenter.registerViewCallback(this);
+        mAlbumDetailPresenter = AlbumDetailPresenter.getInstance();
+        mAlbumDetailPresenter.registerViewCallback(this);
     }
 
     private void initView() {
@@ -77,7 +75,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetialViewCall
             mUiLoader.setOnRetryClickListener(DetailActivity.this);
         }
         mLargeCover = this.findViewById(R.id.iv_large_cover);
-        mSamllCover = this.findViewById(R.id.viv_samll_cover);
+        mSmallCover = this.findViewById(R.id.viv_samll_cover);
         mAlbumTitle = this.findViewById(R.id.tv_album_title);
         mAlbumAuthor = this.findViewById(R.id.tv_album_author);
 
@@ -127,8 +125,8 @@ public class DetailActivity extends BaseActivity implements IAlbumDetialViewCall
         long id = album.getId();
         mCurrentId = id;
 
-        if (mAlbumDetialPresenter != null) {
-            mAlbumDetialPresenter.getAlbumDetial((int) id, mCurrenpage);
+        if (mAlbumDetailPresenter != null) {
+            mAlbumDetailPresenter.getAlbumDetial((int) id, mCurrenPage);
         }
 
         if (mUiLoader != null) {
@@ -157,8 +155,8 @@ public class DetailActivity extends BaseActivity implements IAlbumDetialViewCall
                 }
             });
         }
-        if (mSamllCover != null) {
-            Picasso.with(this).load(album.getCoverUrlLarge()).into(mSamllCover);
+        if (mSmallCover != null) {
+            Picasso.with(this).load(album.getCoverUrlLarge()).into(mSmallCover);
         }
     }
 
@@ -171,8 +169,8 @@ public class DetailActivity extends BaseActivity implements IAlbumDetialViewCall
     @Override
     public void onRetryClick() {
         //重新点击加载
-        if (mAlbumDetialPresenter != null) {
-            mAlbumDetialPresenter.getAlbumDetial((int) mCurrentId, mCurrenpage);
+        if (mAlbumDetailPresenter != null) {
+            mAlbumDetailPresenter.getAlbumDetial((int) mCurrentId, mCurrenPage);
         }
     }
 

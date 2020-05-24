@@ -1,7 +1,5 @@
 package com.example.himalaya.presenters;
 
-import android.util.Log;
-
 import com.example.himalaya.interfaces.IAlbumDetialPresenter;
 import com.example.himalaya.interfaces.IAlbumDetialViewCallback;
 import com.example.himalaya.utils.Constants;
@@ -16,27 +14,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-public class AlbumDetialPresenter implements IAlbumDetialPresenter {
+public class AlbumDetailPresenter implements IAlbumDetialPresenter {
 
     private Album mTargetAlbum = null;
     private List<IAlbumDetialViewCallback> mCallbacks = new ArrayList<>();
     private List<Track> mTracks;
-    private  String TAG = "AlbumDetialPresenter";
+    private  String TAG = "AlbumDetailPresenter";
 
-    private AlbumDetialPresenter(){
+    private AlbumDetailPresenter(){
     }
-    private static AlbumDetialPresenter sInstance = null;
+    private static AlbumDetailPresenter sInstance = null;
 
     /**
      * 懒汉式获取单例
      *
      * @return
      */
-    public static AlbumDetialPresenter getInstance(){
+    public static AlbumDetailPresenter getInstance(){
         if (sInstance == null) {
-            synchronized (AlbumDetialPresenter.class){
+            synchronized (AlbumDetailPresenter.class){
                 if (sInstance == null) {
-                    sInstance = new AlbumDetialPresenter();
+                    sInstance = new AlbumDetailPresenter();
                 }
             }
         }

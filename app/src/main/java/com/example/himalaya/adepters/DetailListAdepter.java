@@ -19,14 +19,14 @@ public class DetailListAdepter extends RecyclerView.Adapter<DetailListAdepter.In
 
     private List<Track> mDetailData = new ArrayList<>();
 
-    private SimpleDateFormat mUpdateFormat = new SimpleDateFormat("yyyy-mm-dd");
-    private SimpleDateFormat mDurationFormat = new SimpleDateFormat("mm:dd");
+    private SimpleDateFormat mUpdateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat mDurationFormat = new SimpleDateFormat("mm:ss");
     private ItemClickListener mItemClickListener = null;
 
     @NonNull
     @Override
     public InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album_detail,parent,false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album_detail, parent, false);
         return new InnerHolder(itemView);
     }
 
@@ -43,7 +43,7 @@ public class DetailListAdepter extends RecyclerView.Adapter<DetailListAdepter.In
 
         //设置数据
         Track track = mDetailData.get(position);
-        orderTv.setText(position + "");
+        orderTv.setText((position + 1) + "");
         titleTv.setText(track.getTrackTitle());
         playCountTv.setText(track.getPlayCount() + "");
         int durationMil = track.getDuration() * 1000;
@@ -57,7 +57,7 @@ public class DetailListAdepter extends RecyclerView.Adapter<DetailListAdepter.In
             @Override
             public void onClick(View v) {
                 if (mItemClickListener != null) {
-                    mItemClickListener.onItemClick(mDetailData,position);
+                    mItemClickListener.onItemClick(mDetailData, position);
                 }
             }
         });
@@ -80,9 +80,11 @@ public class DetailListAdepter extends RecyclerView.Adapter<DetailListAdepter.In
             super(itemView);
         }
     }
-    public void setItemClickListener(ItemClickListener listener){
+
+    public void setItemClickListener(ItemClickListener listener) {
         mItemClickListener = listener;
     }
+
     public interface ItemClickListener {
         void onItemClick(List<Track> detailData, int position);
     }
