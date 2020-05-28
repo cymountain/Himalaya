@@ -6,6 +6,6 @@
     <color name="main_color">#FA7254</color>
     <color name="playing_color">#DA7254</color>
     <color name="error_color">#CC8833</color>
-    <color name="load_color">#cccccc</color>
+    <color name="load_color">#55aaaaaa</color>
     <color name="play_list_text_color">#7d8282</color>
 </resources>

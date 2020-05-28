@@ -15,7 +15,7 @@ import com.example.himalaya.adepters.RecommendListAdapter;
 import com.example.himalaya.base.BaseFragment;
 import com.example.himalaya.interfaces.IReconmmendCallBack;
 import com.example.himalaya.presenters.AlbumDetailPresenter;
-import com.example.himalaya.presenters.ReconmmendPresenter;
+import com.example.himalaya.presenters.RecommendPresenter;
 import com.example.himalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 
@@ -28,7 +28,7 @@ public class RecommendFragmnet extends BaseFragment implements IReconmmendCallBa
     private View mRootView;
     private RecyclerView mRecommendRv;
     private RecommendListAdapter mRecommendListAdapter;
-    private ReconmmendPresenter mReconmmendPresenter;
+    private RecommendPresenter mReconmmendPresenter;
     private UILoader mUiLoader;
 
     @Override
@@ -42,7 +42,7 @@ public class RecommendFragmnet extends BaseFragment implements IReconmmendCallBa
         };
 
         //获取到逻辑层对象
-        mReconmmendPresenter = ReconmmendPresenter.getInstance();
+        mReconmmendPresenter = RecommendPresenter.getInstance();
         //先要设置通知接口的注册
         mReconmmendPresenter.registerViewCallback(this);
         //获取推荐列表

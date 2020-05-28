@@ -17,6 +17,6 @@ public interface IAlbumDetialPresenter extends IBasePresenter<IAlbumDetialViewCa
      * @param albumId
      * @param page
      */
-    void getAlbumDetial(int albumId, int page);
+    void getAlbumDetail(int albumId, int page);
 
 }

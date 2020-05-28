@@ -1,9 +1,18 @@
 <resources>
-    <string name="app_name">Himalaya</string>
+    <string name="app_name">喜马拉雅（清凉版）</string>
 
     <string-array name="indicator_title">
         <item>推荐</item>
         <item>订阅</item>
         <item>历史</item>
     </string-array>
+    
+    <string name="play_mode_order_text">顺序播放</string>
+    <string name="play_mode_random_text">随机播放</string>
+    <string name="play_mode_list_play_text">列表循环</string>
+    <string name="play_mode_single_play_text">单曲循环</string>
+    <string name="is_order">正序</string>
+    <string name="un_order">逆序</string>
+
+    <string name="click_start_play">点击播放</string>
 </resources>

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.himalaya.R;
 import com.example.himalaya.base.BaseApplication;
+import com.example.himalaya.views.PopWindow;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class PlayListAdepter extends RecyclerView.Adapter<PlayListAdepter.InnerH
     private List<Track> mData = new ArrayList<>();
     private View mItemView;
     private int playingIndex = 0;
+    private PopWindow.PlayListItemClickListener mItemClickListener = null;
 
     @Override
     public InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -29,7 +31,16 @@ public class PlayListAdepter extends RecyclerView.Adapter<PlayListAdepter.InnerH
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
+    public void onBindViewHolder(@NonNull InnerHolder holder, final int position) {
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mItemClickListener != null) {
+                    mItemClickListener.onItemClick(position);
+                }
+            }
+        });
         //设置数据给View
         Track track = mData.get(position);
         TextView trackTitleTv = holder.itemView.findViewById(R.id.track_title_tv);
@@ -59,6 +70,10 @@ public class PlayListAdepter extends RecyclerView.Adapter<PlayListAdepter.InnerH
     public void setCurrentPlayPosition(int position) {
         playingIndex = position;
         notifyDataSetChanged();
+    }
+
+    public void setOnItemClickListener(PopWindow.PlayListItemClickListener listener) {
+        this.mItemClickListener = listener;
     }
 
     public class InnerHolder extends RecyclerView.ViewHolder {

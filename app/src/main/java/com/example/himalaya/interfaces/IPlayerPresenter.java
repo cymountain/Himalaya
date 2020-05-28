@@ -45,12 +45,14 @@ public interface IPlayerPresenter extends IBasePresenter<IPlayerCallback> {
 
     /**
      * 根据在位置中的节目播放
+     *
      * @param index
      */
     void playByIndex(int index);
 
     /**
      * 切换播放进度条
+     *
      * @param progress
      */
     void seekTo(int progress);
@@ -60,5 +62,17 @@ public interface IPlayerPresenter extends IBasePresenter<IPlayerCallback> {
      *
      * @return
      */
-    boolean isPlay();
+    boolean isPlaying();
+
+    /**
+     * 反转播放列表
+     */
+    void reversePlayList();
+
+    /**
+     * 第一次进入默认点击播放第一个专辑第一首
+     *
+     * @param id
+     */
+    void playByAlbumId(long id);
 }

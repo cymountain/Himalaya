@@ -2,44 +2,50 @@ package com.example.himalaya.presenters;
 
 import android.util.Log;
 
+import com.example.himalaya.api.HimalayaApi;
 import com.example.himalaya.interfaces.IRecommendPresenter;
 import com.example.himalaya.interfaces.IReconmmendCallBack;
-import com.example.himalaya.utils.Constants;
-import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
-import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.album.GussLikeAlbumList;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class ReconmmendPresenter implements IRecommendPresenter {
+public class RecommendPresenter implements IRecommendPresenter {
 
-    private static final String TAG = "ReconmmendPresenter";
+    private static final String TAG = "RecommendPresenter";
 
     private List<IReconmmendCallBack> mCallBacks = new ArrayList<>();
+    private List<Album> mCurrentRecommend = null;
 
-    private ReconmmendPresenter(){
+    private RecommendPresenter(){
     }
-    private static ReconmmendPresenter sInstance = null;
+    private static RecommendPresenter sInstance = null;
 
     /**
      * 获取单例
      *
      * @return
      */
-    public static ReconmmendPresenter getInstance(){
+    public static RecommendPresenter getInstance(){
         if (sInstance == null) {
-            synchronized (ReconmmendPresenter.class){
+            synchronized (RecommendPresenter.class){
                 if (sInstance == null) {
-                    sInstance = new ReconmmendPresenter();
+                    sInstance = new RecommendPresenter();
                 }
             }
         }
         return sInstance;
+    }
+
+    /**
+     * 获取当前推荐专辑列表
+     *
+     * @return 推荐专辑列表，使用这个之前要判空
+     */
+    public List<Album> getCurrentRecommend(){
+        return mCurrentRecommend;
     }
 
     //获取推荐内容，其实就是猜你喜欢
@@ -48,11 +54,10 @@ public class ReconmmendPresenter implements IRecommendPresenter {
     public void getRecommendList() {
         //获取推荐内容
         //封装参数
-        updataLoading();
-        Map<String, String> map = new HashMap<>();
-        //返回数据的条数
-        map.put(DTransferConstants.LIKE_COUNT, Constants.COUNT_RECOMMAND + "");
-        CommonRequest.getGuessLikeAlbum(map, new IDataCallBack<GussLikeAlbumList>() {
+        updateLoading();
+
+        HimalayaApi himalayaApi = HimalayaApi.getInstance();
+        himalayaApi.getRecommendList(new IDataCallBack<GussLikeAlbumList>() {
             @Override
             public void onSuccess(GussLikeAlbumList gussLikeAlbumList) {
                 //数据获取成功
@@ -93,10 +98,11 @@ public class ReconmmendPresenter implements IRecommendPresenter {
                 for (IReconmmendCallBack callBack : mCallBacks) {
                     callBack.onReconmmendListLoaded(albumList);
                 }
+                this.mCurrentRecommend = albumList;
             }
         }
     }
-    private void updataLoading(){
+    private void updateLoading(){
         for (IReconmmendCallBack callBack : mCallBacks) {
             callBack.onLoading();
         }
