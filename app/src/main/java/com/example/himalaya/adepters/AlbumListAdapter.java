@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.himalaya.R;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -22,7 +21,7 @@ import com.ximalaya.ting.android.opensdk.model.album.Album;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdapter.InnerHoder> {
+public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.InnerHoder> {
     private static final String TAG = "RecommendListAdapter";
     private List<Album> mData = new ArrayList<>();
     private OnRecommendItemClickListener mItemClickListener = null;

@@ -5,8 +5,10 @@ import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.album.GussLikeAlbumList;
-import com.ximalaya.ting.android.opensdk.model.track.Track;
+import com.ximalaya.ting.android.opensdk.model.album.SearchAlbumList;
 import com.ximalaya.ting.android.opensdk.model.track.TrackList;
+import com.ximalaya.ting.android.opensdk.model.word.HotWordList;
+import com.ximalaya.ting.android.opensdk.model.word.SuggestWords;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +44,7 @@ public class HimalayaApi {
     public void getRecommendList(IDataCallBack<GussLikeAlbumList> callBack) {
         Map<String, String> map = new HashMap<>();
         //返回数据的条数
-        map.put(DTransferConstants.LIKE_COUNT, Constants.COUNT_RECOMMAND + "");
+        map.put(DTransferConstants.LIKE_COUNT, Constants.COUNT_RECOMMEND + "");
         CommonRequest.getGuessLikeAlbum(map, callBack);
     }
 
@@ -60,5 +62,44 @@ public class HimalayaApi {
         map.put(DTransferConstants.PAGE, pageIndex + "");
         map.put(DTransferConstants.PAGE_SIZE, Constants.COUNT_DEFAULT + "");
         CommonRequest.getTracks(map, callBack);
+    }
+
+    /**
+     * 根据关键字搜索
+     *
+     * @param keyWord
+     * @param page
+     * @param callback
+     */
+    public void doSearchByKeyWord(String keyWord, int page, IDataCallBack<SearchAlbumList> callback) {
+        Map<String, String> map = new HashMap<>();
+        map.put(DTransferConstants.SEARCH_KEY, keyWord);
+        map.put(DTransferConstants.CATEGORY_ID, 0 + "");
+        map.put(DTransferConstants.PAGE, page + "");
+        map.put(DTransferConstants.PAGE_SIZE, Constants.COUNT_DEFAULT + "");
+        CommonRequest.getSearchedAlbums(map, callback);
+    }
+
+    /**
+     * 获取推荐热词
+     *
+     * @param callback
+     */
+    public void getHotWords(IDataCallBack<HotWordList> callback) {
+        Map<String, String> map = new HashMap<>();
+        map.put(DTransferConstants.TOP, Constants.COUNT_HOT_WORD + "");
+        CommonRequest.getHotWords(map, callback);
+    }
+
+    /**
+     * 根据关键字获取联想词
+     *
+     * @param keyword
+     * @param callback
+     */
+    public void getSuggestWord(String keyword, IDataCallBack<SuggestWords> callback) {
+        Map<String, String> map = new HashMap<>();
+        map.put(DTransferConstants.SEARCH_KEY, keyword);
+        CommonRequest.getSuggestWord(map, callback);
     }
 }

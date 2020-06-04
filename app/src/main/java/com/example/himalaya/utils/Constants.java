@@ -5,9 +5,12 @@ public class Constants {
 
     //获取推荐列表的专辑数量
 
-    public static int COUNT_RECOMMAND = 50;
+    public static int COUNT_RECOMMEND = 50;
 
     //默认请求数量
 
     public static int COUNT_DEFAULT = 50;
+
+    //热词数量
+    public static int COUNT_HOT_WORD = 15;
 }

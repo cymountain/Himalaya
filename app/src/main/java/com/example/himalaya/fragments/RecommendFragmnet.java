@@ -11,23 +11,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.himalaya.DetailActivity;
 import com.example.himalaya.R;
-import com.example.himalaya.adepters.RecommendListAdapter;
+import com.example.himalaya.adepters.AlbumListAdapter;
 import com.example.himalaya.base.BaseFragment;
 import com.example.himalaya.interfaces.IReconmmendCallBack;
 import com.example.himalaya.presenters.AlbumDetailPresenter;
 import com.example.himalaya.presenters.RecommendPresenter;
 import com.example.himalaya.views.UILoader;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
 
-public class RecommendFragmnet extends BaseFragment implements IReconmmendCallBack, UILoader.OnRetryClickListener, RecommendListAdapter.OnRecommendItemClickListener {
+public class RecommendFragmnet extends BaseFragment implements IReconmmendCallBack, UILoader.OnRetryClickListener, AlbumListAdapter.OnRecommendItemClickListener {
     private static final String TAG = "RecommendFragmnet";
     private View mRootView;
     private RecyclerView mRecommendRv;
-    private RecommendListAdapter mRecommendListAdapter;
+    private AlbumListAdapter mRecommendListAdapter;
     private RecommendPresenter mReconmmendPresenter;
     private UILoader mUiLoader;
 
@@ -63,6 +64,8 @@ public class RecommendFragmnet extends BaseFragment implements IReconmmendCallBa
         mRootView = layoutInflater.inflate(R.layout.fragment_recommend,container,false);
         //步骤
         //1.找到控件
+        TwinklingRefreshLayout refreshLayout = mRootView.findViewById(R.id.over_scroll_view);
+        refreshLayout.setPureScrollModeOn();
         mRecommendRv = mRootView.findViewById(R.id.recommend_list);
         //2.设置布局
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -78,7 +81,7 @@ public class RecommendFragmnet extends BaseFragment implements IReconmmendCallBa
             }
         });
         //3.设置适配器
-        mRecommendListAdapter = new RecommendListAdapter();
+        mRecommendListAdapter = new AlbumListAdapter();
         mRecommendRv.setAdapter(mRecommendListAdapter);
         mRecommendListAdapter.setOnRecommendItemClickListener(this);
         return mRootView;

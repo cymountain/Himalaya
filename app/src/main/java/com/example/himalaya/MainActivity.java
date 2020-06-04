@@ -42,6 +42,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
     private ImageView mMainPlayControl;
     private PlayerPresenter mPlayerPresenter;
     private View mPlayControl;
+    private View mSearchBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,14 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
                 startActivity(intent);
             }
         });
+        mSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this,SearchActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -142,6 +151,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
         mMainSubTitle = this.findViewById(R.id.main_sub_title);
         mMainPlayControl = this.findViewById(R.id.main_play_control);
         mPlayControl = this.findViewById(R.id.main_play_control_item);
+        mSearchBtn = this.findViewById(R.id.search_btn);
 
     }
 
