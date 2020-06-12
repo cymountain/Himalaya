@@ -2,7 +2,6 @@ package com.example.himalaya.adepters;
 
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.himalaya.R;
+import com.example.himalaya.utils.LogUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -24,7 +24,8 @@ import java.util.List;
 public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.InnerHoder> {
     private static final String TAG = "RecommendListAdapter";
     private List<Album> mData = new ArrayList<>();
-    private OnRecommendItemClickListener mItemClickListener = null;
+    private OnAlbumItemClickListener mItemClickListener = null;
+    private OnAlbumLongClickListener mItemLongClickListener = null;
 
     @NonNull
     @Override
@@ -42,12 +43,21 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
             public void onClick(View v) {
                 if (mItemClickListener != null) {
                     int clickPosition = (int)v.getTag();
-                    mItemClickListener.onItemClick(clickPosition,mData.get(position));
+                    mItemClickListener.onItemClick(clickPosition,mData.get(clickPosition));
                 }
-                Log.e(TAG,"position is -- >"+v.getTag());
+                LogUtils.d(TAG,"position is -- >"+v.getTag());
             }
         });
         holder.setData(mData.get(position));
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                //true表示消费掉该事件
+                int clickPosition = (int)v.getTag();
+                mItemLongClickListener.onItemLongClick(mData.get(clickPosition));
+                return true;
+            }
+        });
     }
 
     @Override
@@ -110,18 +120,28 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
                         .noFade()
                         .error(R.color.error_color).into(albumCoverIv);
 
-                Log.e(TAG,"获取到图片。");
+                LogUtils.d(TAG,"获取到图片。");
             } else {
-                Log.e(TAG,"未获取到图片。");
+                albumCoverIv.setImageResource(R.mipmap.logo);
+                LogUtils.d(TAG,"未获取到图片。");
+
             }
         }
     }
 
-    public void setOnRecommendItemClickListener(OnRecommendItemClickListener listener){
+    public void setOnAlbumItemClickListener(OnAlbumItemClickListener listener){
         this.mItemClickListener = listener;
     }
 
-    public interface OnRecommendItemClickListener{
+    public interface OnAlbumItemClickListener {
         void onItemClick(int position, Album album);
+    }
+    //item长按的接口
+    public void setOnAlbumLongClickListener(OnAlbumLongClickListener listener){
+        this.mItemLongClickListener = listener;
+    }
+
+    public interface OnAlbumLongClickListener{
+        void onItemLongClick(Album album);
     }
 }

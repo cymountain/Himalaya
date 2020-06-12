@@ -8,4 +8,6 @@
     <color name="error_color">#CC8833</color>
     <color name="load_color">#55aaaaaa</color>
     <color name="play_list_text_color">#7d8282</color>
+    <color name="search_item_bg">#99cccccc</color>
+    <color name="white">#ffffff</color>
 </resources>

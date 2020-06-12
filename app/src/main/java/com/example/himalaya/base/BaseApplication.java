@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 
-import com.example.himalaya.utils.LogUtil;
+import com.example.himalaya.utils.LogUtils;
 import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.player.XmPlayerManager;
@@ -35,7 +35,7 @@ public class BaseApplication extends Application {
         //初始化播放器
         XmPlayerManager.getInstance(this).init();
 
-        LogUtil.init(this.getPackageName(), false);
+        LogUtils.init(this.getPackageName(), false);
 
         sHandler = new Handler();
 

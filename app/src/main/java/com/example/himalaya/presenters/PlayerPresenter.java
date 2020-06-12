@@ -4,10 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.example.himalaya.api.HimalayaApi;
+import com.example.himalaya.data.HimalayaApi;
 import com.example.himalaya.base.BaseApplication;
 import com.example.himalaya.interfaces.IPlayerCallback;
 import com.example.himalaya.interfaces.IPlayerPresenter;
+import com.example.himalaya.utils.LogUtils;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.PlayableModel;
 import com.ximalaya.ting.android.opensdk.model.advertis.Advertis;
@@ -93,7 +94,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
             mCurrentTrack = list.get(playIndex);
             mCurrentIndex = playIndex;
         } else {
-            Log.e(TAG, "mPlayerManager is null");
+            LogUtils.e(TAG, "mPlayerManager is null");
         }
     }
 
@@ -253,6 +254,12 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void registerViewCallback(IPlayerCallback iPlayerCallback) {
+        //先跟新回调
+        if (!mIPlayerCallbacks.contains(iPlayerCallback)) {
+            mIPlayerCallbacks.add(iPlayerCallback);
+        }
+        //跟新之前先让ViewPager有数据
+        getPlayList();
         iPlayerCallback.onTrackUpdate(mCurrentTrack, mCurrentIndex);
         iPlayerCallback.onProgressChange(mCurrentPlayProgressPos,mCurrentPlayProgressDuration);
         handlePlayStates(iPlayerCallback);
@@ -260,9 +267,6 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
         int anInt = mPlayModeSp.getInt(PLAY_MODE_SP_KEY, PLAY_MODEL_LIST_INT);
         mCurrentPlayMode = getModeByMode(anInt);
         iPlayerCallback.onPlayModeChange(mCurrentPlayMode);
-        if (!mIPlayerCallbacks.contains(iPlayerCallback)) {
-            mIPlayerCallbacks.add(iPlayerCallback);
-        }
     }
 
     private void handlePlayStates(IPlayerCallback iPlayerCallback) {
@@ -370,7 +374,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
         if (curModel instanceof Track) {
             Track currentTrack = (Track) curModel;
             mCurrentTrack = currentTrack;
-            Log.e(TAG, "title is  === >" + currentTrack.getTrackTitle());
+            LogUtils.d(TAG, "title is  === >" + currentTrack.getTrackTitle());
             //更新Ui
             for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
                 iPlayerCallback.onTrackUpdate(mCurrentTrack, mCurrentIndex);

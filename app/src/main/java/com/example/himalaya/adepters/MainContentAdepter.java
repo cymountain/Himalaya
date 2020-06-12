@@ -7,9 +7,9 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.himalaya.utils.FragmentCreator;
 
-public class MianContentAdepter extends FragmentPagerAdapter {
+public class MainContentAdepter extends FragmentPagerAdapter {
     
-    public MianContentAdepter(@NonNull FragmentManager fm) {
+    public MainContentAdepter(@NonNull FragmentManager fm) {
         super(fm);
     }
 

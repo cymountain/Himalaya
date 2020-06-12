@@ -2,7 +2,7 @@ package com.example.himalaya.utils;
 
 import android.util.Log;
 
-public class LogUtil {
+public class LogUtils {
 
     public static String sTAG = "LogUtil";
 

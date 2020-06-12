@@ -1,10 +1,9 @@
 package com.example.himalaya.presenters;
 
-import android.util.Log;
-
-import com.example.himalaya.api.HimalayaApi;
+import com.example.himalaya.data.HimalayaApi;
 import com.example.himalaya.interfaces.IRecommendPresenter;
 import com.example.himalaya.interfaces.IReconmmendCallBack;
+import com.example.himalaya.utils.LogUtils;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.album.GussLikeAlbumList;
@@ -71,7 +70,7 @@ public class RecommendPresenter implements IRecommendPresenter {
             @Override
             public void onError(int i, String s) {
                 //获取失败
-                Log.e(TAG,"error -- > code" + i +"error -- > massage" + s);
+                LogUtils.e(TAG,"error -- > code" + i +"error -- > massage" + s);
                 handlerError();
             }
         });

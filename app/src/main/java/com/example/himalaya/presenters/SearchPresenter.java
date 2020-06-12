@@ -2,21 +2,25 @@ package com.example.himalaya.presenters;
 
 import android.util.Log;
 
-import com.example.himalaya.api.HimalayaApi;
+import com.example.himalaya.data.HimalayaApi;
 import com.example.himalaya.interfaces.ISearchCallback;
 import com.example.himalaya.interfaces.ISearchPresenter;
+import com.example.himalaya.utils.Constants;
+import com.example.himalaya.utils.LogUtils;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.album.SearchAlbumList;
-import com.ximalaya.ting.android.opensdk.model.word.AlbumResult;
 import com.ximalaya.ting.android.opensdk.model.word.HotWord;
 import com.ximalaya.ting.android.opensdk.model.word.HotWordList;
+import com.ximalaya.ting.android.opensdk.model.word.QueryResult;
 import com.ximalaya.ting.android.opensdk.model.word.SuggestWords;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchPresenter implements ISearchPresenter {
+
+    private List<Album> mSearchResult = new ArrayList<>();
 
     private List<ISearchCallback> mCallbacks = new ArrayList<>();
     //当前搜索关键字
@@ -45,6 +49,8 @@ public class SearchPresenter implements ISearchPresenter {
 
     @Override
     public void doSearch(String keyWord) {
+        mCurrentPage = DEFAULT_PAGE;
+        mSearchResult.clear();
         this.mCurrentKeyWord = keyWord;
         search(keyWord);
     }
@@ -54,22 +60,40 @@ public class SearchPresenter implements ISearchPresenter {
             @Override
             public void onSuccess(SearchAlbumList searchAlbumList) {
                 List<Album> albums = searchAlbumList.getAlbums();
+                mSearchResult.addAll(albums);
                 if (albums != null) {
-                    Log.e(TAG, "album size -- >" + albums.size());
-                    for (ISearchCallback iSearchCallback : mCallbacks) {
-                        iSearchCallback.onSearchResultLoad(albums);
+                    LogUtils.d(TAG, "album size -- >" + albums.size());
+                    if (mIsLoadMore) {
+                        for (ISearchCallback iSearchCallback : mCallbacks) {
+                            if (albums.size()==0) {
+                                iSearchCallback.onLoadMoreResult(mSearchResult, false);
+                            }else {
+                                iSearchCallback.onLoadMoreResult(mSearchResult, true);
+                            }
+                        }
+                        mIsLoadMore = false;
+                    } else {
+                        for (ISearchCallback iSearchCallback : mCallbacks) {
+                            iSearchCallback.onSearchResultLoad(mSearchResult);
+                        }
                     }
                 } else {
-                    Log.e(TAG, "album is null");
+                    LogUtils.e(TAG, "album is null");
                 }
 
             }
 
             @Override
             public void onError(int errorCode, String errorMsg) {
-                Log.e(TAG, "doSearchByKeyWord errorCode is -->" + errorCode + "doSearchByKeyWord errorMsg is --> " + errorMsg);
+                LogUtils.d(TAG, "doSearchByKeyWord errorCode is -->" + errorCode + "doSearchByKeyWord errorMsg is --> " + errorMsg);
                 for (ISearchCallback iSearchCallback : mCallbacks) {
-                    iSearchCallback.onError(errorCode, errorMsg);
+                    if (mIsLoadMore) {
+                        iSearchCallback.onLoadMoreResult(mSearchResult, false);
+                        mCurrentPage--;
+                        mIsLoadMore = false;
+                    } else {
+                        iSearchCallback.onError(errorCode, errorMsg);
+                    }
                 }
             }
         });
@@ -80,13 +104,24 @@ public class SearchPresenter implements ISearchPresenter {
         search(mCurrentKeyWord);
     }
 
+    private boolean mIsLoadMore = false;
+
     @Override
     public void loadMore() {
-
+        if (mSearchResult.size()< Constants.COUNT_DEFAULT) {
+            for (ISearchCallback iSearchCallback : mCallbacks) {
+                iSearchCallback.onLoadMoreResult(mSearchResult,false);
+            }
+        }else {
+            mIsLoadMore = true;
+            mCurrentPage++;
+            search(mCurrentKeyWord);
+        }
     }
 
     @Override
     public void getHotWords() {
+        //todo:热词缓存，意面多次获取
         mHimalayaApi.getHotWords(new IDataCallBack<HotWordList>() {
             @Override
             public void onSuccess(HotWordList hotWordList) {
@@ -101,7 +136,7 @@ public class SearchPresenter implements ISearchPresenter {
 
             @Override
             public void onError(int errorCode, String errorMsg) {
-                Log.e(TAG, "getHotWords errorCode is -->" + errorCode + "getHotWords errorMsg is --> " + errorMsg);
+                LogUtils.d(TAG, "getHotWords errorCode is -->" + errorCode + "getHotWords errorMsg is --> " + errorMsg);
                 for (ISearchCallback iSearchCallback : mCallbacks) {
                     iSearchCallback.onError(errorCode, errorMsg);
                 }
@@ -115,14 +150,17 @@ public class SearchPresenter implements ISearchPresenter {
             @Override
             public void onSuccess(SuggestWords suggestWords) {
                 if (suggestWords != null) {
-                    List<AlbumResult> result = suggestWords.getAlbumList();
-                    Log.e(TAG, "the suggestWords size is -- >" + result.toString());
+                    List<QueryResult> keyWordList = suggestWords.getKeyWordList();
+                    LogUtils.d(TAG, "the suggestWords size is -- >" + keyWordList.toString());
+                    for (ISearchCallback iSearchCallback : mCallbacks) {
+                        iSearchCallback.onRecommendWordLoaded(keyWordList);
+                    }
                 }
             }
 
             @Override
             public void onError(int errorCode, String errorMsg) {
-                Log.e(TAG, "getRecommendWord errorCode is -->" + errorCode + "getRecommendWord errorMsg is --> " + errorMsg);
+                LogUtils.d(TAG, "getRecommendWord errorCode is -->" + errorCode + "getRecommendWord errorMsg is --> " + errorMsg);
             }
         });
     }

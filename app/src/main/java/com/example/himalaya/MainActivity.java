@@ -6,22 +6,20 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.himalaya.adepters.MianContentAdepter;
+import com.example.himalaya.adepters.MainContentAdepter;
 import com.example.himalaya.adepters.indicatorAdapter;
 import com.example.himalaya.interfaces.IPlayerCallback;
 import com.example.himalaya.presenters.PlayerPresenter;
 import com.example.himalaya.presenters.RecommendPresenter;
+import com.example.himalaya.utils.LogUtils;
 import com.example.himalaya.views.RoundRectImageView;
 import com.squareup.picasso.Picasso;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
-import com.ximalaya.ting.android.opensdk.player.advertis.MiniPlayer;
-import com.ximalaya.ting.android.opensdk.player.constants.PlayerConstants;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
@@ -64,7 +62,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
         mIndicatorAdapter.setOnIndicatorTapClicListenner(new indicatorAdapter.OnIndicatorTapClicListenner() {
             @Override
             public void OnTapClick(int index) {
-                Log.e(TAG, "click index is --> " + index);
+                LogUtils.d(TAG, "click index is --> " + index);
                 if (mContentPager != null) {
                     mContentPager.setCurrentItem(index);
                 }
@@ -137,7 +135,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
 
         //创建内容适配器
         FragmentManager supportFragmentManager = getSupportFragmentManager();
-        MianContentAdepter mianContentAdepter = new MianContentAdepter(supportFragmentManager);
+        MainContentAdepter mianContentAdepter = new MainContentAdepter(supportFragmentManager);
         mContentPager.setAdapter(mianContentAdepter);
 
         //把他们绑定起来

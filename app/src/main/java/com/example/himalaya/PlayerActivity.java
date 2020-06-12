@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +21,7 @@ import com.example.himalaya.adepters.PlayerTrackPageAdapter;
 import com.example.himalaya.base.BaseActivity;
 import com.example.himalaya.interfaces.IPlayerCallback;
 import com.example.himalaya.presenters.PlayerPresenter;
+import com.example.himalaya.utils.LogUtils;
 import com.example.himalaya.views.PopWindow;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
@@ -85,7 +85,6 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         initView();
         mPlayerPresenter = PlayerPresenter.getPlayerPresenter();
         mPlayerPresenter.registerViewCallback(this);
-        mPlayerPresenter.getPlayList();
         initEvent();
         initBgAnimation();
     }
@@ -405,7 +404,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
     @Override
     public void onTrackUpdate(Track track, int playIndex) {
         if (track==null) {
-            Log.e(TAG, "onTrackUpdate: Track is null");
+            LogUtils.d(TAG, "onTrackUpdate: Track is null");
             return;
         }
         this.mTrackTitleText = track.getTrackTitle();

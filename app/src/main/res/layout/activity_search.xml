@@ -21,23 +21,40 @@
             android:paddingRight="5dp"
             android:src="@mipmap/ic_back" />
 
-        <EditText
-            android:id="@+id/search_edit"
+        <RelativeLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="1"
-            android:background="@drawable/shape_edit_text_bg"
-            android:hint="请输入你想听的内容"
-            android:maxLines="1"
-            android:paddingLeft="8dp"
-            android:textSize="16sp" />
+            android:layout_height="30dp"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/search_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:paddingRight="30dp"
+                android:background="@drawable/shape_edit_text_bg"
+                android:hint="请输入你想听的内容"
+                android:maxLines="1"
+                android:paddingLeft="8dp"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/search_edit_clear"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:src="@mipmap/ic_clear" />
+
+        </RelativeLayout>
+
 
         <TextView
             android:id="@+id/do_search_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
@@ -51,15 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.example.himalaya.views.FlowTextLayout
-            android:layout_margin="20dp"
-            android:id="@+id/flow_text_layout"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            />
     </FrameLayout>
-
-
 
 
 </LinearLayout>
