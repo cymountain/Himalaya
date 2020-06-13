@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.himalaya.adepters.DetailListAdepter;
 import com.example.himalaya.base.BaseActivity;
 import com.example.himalaya.base.BaseApplication;
-import com.example.himalaya.data.HimalayaDBHelper;
 import com.example.himalaya.interfaces.IAlbumDetialViewCallback;
 import com.example.himalaya.interfaces.IPlayerCallback;
 import com.example.himalaya.interfaces.ISubscriptionCallback;
@@ -228,7 +227,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetialViewCall
             @Override
             public void onRefresh(TwinklingRefreshLayout refreshLayout) {
                 super.onRefresh(refreshLayout);
-                BaseApplication.getHander().postDelayed(new Runnable() {
+                BaseApplication.getHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(DetailActivity.this, "刷新成功", Toast.LENGTH_SHORT).show();
@@ -291,7 +290,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetialViewCall
         }
 
         if (mUiLoader != null) {
-            mUiLoader.updateStatus(UILoader.UIStatus.LAODING);
+            mUiLoader.updateStatus(UILoader.UIStatus.LOADING);
         }
         if (mAlbumTitle != null) {
             mAlbumTitle.setText(album.getAlbumTitle());

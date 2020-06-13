@@ -94,7 +94,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
             mCurrentTrack = list.get(playIndex);
             mCurrentIndex = playIndex;
         } else {
-            LogUtils.e(TAG, "mPlayerManager is null");
+            LogUtils.d(TAG, "mPlayerManager is null");
         }
     }
 
@@ -370,11 +370,18 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     @Override
     public void onSoundSwitch(PlayableModel lastModel, PlayableModel curModel) {
         Log.d(TAG, "onSoundSwitch...");
+        if (curModel != null) {
+            LogUtils.d(TAG, "curModel..."+curModel.getKind());
+        }
         mCurrentIndex = mPlayerManager.getCurrentIndex();
         if (curModel instanceof Track) {
             Track currentTrack = (Track) curModel;
             mCurrentTrack = currentTrack;
             LogUtils.d(TAG, "title is  === >" + currentTrack.getTrackTitle());
+            //保存播放记录
+            HistoryPresenter historyPresenter = HistoryPresenter.getHistoryPresenter();
+            historyPresenter.addHistory(mCurrentTrack);
+
             //更新Ui
             for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
                 iPlayerCallback.onTrackUpdate(mCurrentTrack, mCurrentIndex);

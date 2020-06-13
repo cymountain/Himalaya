@@ -117,7 +117,7 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
     public void onAddResult(final boolean isSuccess) {
         listSubscription();
         //添加结果的回调
-        BaseApplication.getHander().post(new Runnable() {
+        BaseApplication.getHandler().post(new Runnable() {
             @Override
             public void run() {
                 for (ISubscriptionCallback callback : mCallbacks) {
@@ -131,7 +131,7 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
     public void onDelResult(final boolean isSuccess) {
         listSubscription();
         //删除订阅的回调
-        BaseApplication.getHander().post(new Runnable() {
+        BaseApplication.getHandler().post(new Runnable() {
             @Override
             public void run() {
                 for (ISubscriptionCallback callback : mCallbacks) {
@@ -149,7 +149,7 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
             mData.put(album.getId(), album);
         }
         //通知ui
-        BaseApplication.getHander().post(new Runnable() {
+        BaseApplication.getHandler().post(new Runnable() {
             @Override
             public void run() {
                 for (ISubscriptionCallback callback : mCallbacks) {

@@ -128,7 +128,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
             public void onRetryClick() {
                 if (mSearchPresenter != null) {
                     mSearchPresenter.reSearch();
-                    mUILoader.updateStatus(UILoader.UIStatus.LAODING);
+                    mUILoader.updateStatus(UILoader.UIStatus.LOADING);
                 }
             }
         });
@@ -152,7 +152,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
 
                 if (mSearchPresenter != null) {
                     mSearchPresenter.doSearch(keyWord);
-                    mUILoader.updateStatus(UILoader.UIStatus.LAODING);
+                    mUILoader.updateStatus(UILoader.UIStatus.LOADING);
                 }
             }
         });
@@ -210,7 +210,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
             mSearchPresenter.doSearch(text);
         }
         if (mUILoader != null) {
-            mUILoader.updateStatus(UILoader.UIStatus.LAODING);
+            mUILoader.updateStatus(UILoader.UIStatus.LOADING);
         }
     }
 

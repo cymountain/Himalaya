@@ -22,7 +22,7 @@ public abstract class UILoader extends FrameLayout {
     private OnRetryClickListener mOnRetryClickListener = null;
 
     public enum UIStatus{
-        LAODING,SUCCESS,NETWORK_ERROR,EMPTY,NONE
+        LOADING,SUCCESS,NETWORK_ERROR,EMPTY,NONE
     }
     public UIStatus mCurrentStats = UIStatus.NONE;
     public UILoader(@NonNull Context context) {
@@ -41,7 +41,7 @@ public abstract class UILoader extends FrameLayout {
     public void updateStatus(UIStatus status){
         mCurrentStats = status;
         //更新UI一定要在主线程
-        BaseApplication.getHander().post(new Runnable() {
+        BaseApplication.getHandler().post(new Runnable() {
             @Override
             public void run() {
                 switchUIByCurrentStatus();
@@ -62,7 +62,7 @@ public abstract class UILoader extends FrameLayout {
             addView(mLoadingView);
         }
         //是否可见
-        mLoadingView.setVisibility(mCurrentStats == UIStatus.LAODING ? VISIBLE : GONE);
+        mLoadingView.setVisibility(mCurrentStats == UIStatus.LOADING ? VISIBLE : GONE);
 
         //成功
         if (mSuccessView == null) {

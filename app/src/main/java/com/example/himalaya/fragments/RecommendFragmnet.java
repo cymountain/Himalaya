@@ -108,7 +108,7 @@ public class RecommendFragmnet extends BaseFragment implements IReconmmendCallBa
 
     @Override
     public void onLoading() {
-        mUiLoader.updateStatus(UILoader.UIStatus.LAODING);
+        mUiLoader.updateStatus(UILoader.UIStatus.LOADING);
     }
 
 
